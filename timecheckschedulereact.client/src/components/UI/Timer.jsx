@@ -1,53 +1,48 @@
-﻿// src/components/UI/Timer.jsx
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 
 const Timer = ({ initialTime, onStop }) => {
-    const [time, setTime] = useState(initialTime); // В формате "HH:MM"
-    const [isRunning, setIsRunning] = useState(false);
-    const [seconds, setSeconds] = useState(0);
+    const [timeLeft, setTimeLeft] = useState(parseTimeToSeconds(initialTime)); // Переводим HH:MM в секунды
+    const [isRunning, setIsRunning] = useState(true);
 
     useEffect(() => {
-        let interval = null;
-        if (isRunning) {
-            interval = setInterval(() => {
-                setSeconds((prev) => prev + 1);
-            }, 1000);
-        } else if (!isRunning && seconds !== 0) {
-            clearInterval(interval);
-        }
-        return () => clearInterval(interval);
-    }, [isRunning, seconds]);
+        let interval;
 
-    const startTimer = () => {
-        setIsRunning(true);
-    };
+        if (isRunning && timeLeft > 0) {
+            interval = setInterval(() => {
+                setTimeLeft((prev) => prev - 1);
+            }, 1000);
+        } else if (timeLeft === 0) {
+            clearInterval(interval);
+            alert('Время на задачу окончено. Сделайте перерыв.');
+            onStop(); // Остановка таймера при завершении
+        }
+
+        return () => clearInterval(interval);
+    }, [isRunning, timeLeft, onStop]);
 
     const stopTimer = () => {
         setIsRunning(false);
-        onStop(seconds);
-        setSeconds(0); 
+        onStop();
     };
 
     const formatTime = (secs) => {
-        const hrs = Math.floor(secs / 3600)
-            .toString()
-            .padStart(2, '0');
-        const mins = Math.floor((secs % 3600) / 60)
-            .toString()
-            .padStart(2, '0');
+        const mins = Math.floor(secs / 60).toString().padStart(2, '0');
         const sec = (secs % 60).toString().padStart(2, '0');
-        return `${hrs}:${mins}:${sec}`;
+        return `${mins}:${sec}`;
+    };
+
+    const parseTimeToSeconds = (time) => {
+        const [hours, minutes] = time.split(':').map(Number);
+        return hours * 3600 + minutes * 60;
     };
 
     return (
-        <div>
+        <div style={{ background: '#fff', padding: '15px', border: '1px solid #ddd', borderRadius: '8px', width: '200px' }}>
             <h3>Таймер</h3>
-            <div>{formatTime(seconds)}</div>
-            {!isRunning ? (
-                <button onClick={startTimer}>Старт</button>
-            ) : (
-                <button onClick={stopTimer}>Стоп</button>
-            )}
+            <div style={{ fontSize: '24px', marginBottom: '10px' }}>{formatTime(timeLeft)}</div>
+            <button onClick={stopTimer} style={{ background: '#f44336', color: '#fff', padding: '5px 10px', border: 'none', borderRadius: '4px' }}>
+                Стоп
+            </button>
         </div>
     );
 };
