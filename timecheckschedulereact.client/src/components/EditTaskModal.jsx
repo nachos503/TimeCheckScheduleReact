@@ -1,4 +1,4 @@
-// src/components/EditTaskModal.jsx
+п»ї// src/components/EditTaskModal.jsx
 import React, { useState, useEffect } from 'react';
 import API from '../services/api';
 
@@ -14,9 +14,9 @@ const EditTaskModal = ({ task, onClose, onSave }) => {
         if (isEditMode && task) {
             setTitle(task.title);
             setDescription(task.description);
-            setStartTime(task.startTime.slice(0, 16)); // Форматирование для input типа datetime-local
+            setStartTime(task.startTime.slice(0, 16)); // Р¤РѕСЂРјР°С‚РёСЂРѕРІР°РЅРёРµ РґР»СЏ input С‚РёРїР° datetime-local
             setEndTime(task.endTime.slice(0, 16));
-            setDate(task.date.slice(0, 10)); // Форматирование для input типа date
+            setDate(task.date.slice(0, 10)); // Р¤РѕСЂРјР°С‚РёСЂРѕРІР°РЅРёРµ РґР»СЏ input С‚РёРїР° date
         }
     }, [isEditMode, task]);
 
@@ -28,12 +28,12 @@ const EditTaskModal = ({ task, onClose, onSave }) => {
             startTime: new Date(startTime).toISOString(),
             endTime: new Date(endTime).toISOString(),
             date: new Date(date).toISOString(),
-            // Если редактирование, добавляем id
+            // Р•СЃР»Рё СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ, РґРѕР±Р°РІР»СЏРµРј id
             ...(isEditMode && { id: task.id })
         };
 
         await onSave(taskData);
-    };
+    }; 
 
     return (
         <div style={modalStyles.overlay}>

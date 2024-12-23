@@ -14,9 +14,9 @@ namespace TimeCheckScheduleReact.Models
         [Required]
         public string PasswordHash { get; set; }
 
-        [EmailAddress]
         public string Email { get; set; }
 
-        public ICollection<TaskItem> TaskItems { get; set; }
+        // Навигационное свойство для проектов
+        public ICollection<Project> Projects { get; set; }
     }
 }

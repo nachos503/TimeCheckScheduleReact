@@ -1,4 +1,4 @@
-// src/pages/LoginPage.jsx
+п»ї// src/pages/LoginPage.jsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import API from '../services/api';
@@ -10,7 +10,7 @@ const LoginPage = () => {
 
     const handleLogin = async () => {
         try {
-            // Отправка запроса без Authorization заголовка
+            // РћС‚РїСЂР°РІРєР° Р·Р°РїСЂРѕСЃР° Р±РµР· Authorization Р·Р°РіРѕР»РѕРІРєР°
             const response = await API.post('/auth/login', {
                 username,
                 password
@@ -40,9 +40,10 @@ const LoginPage = () => {
                 onChange={(e) => setPassword(e.target.value)}
             />
             <button onClick={handleLogin}>Login</button>
-            <p>Нет аккаунта? <Link to="/register">Зарегистрируйтесь</Link></p>
+            <p>РќРµС‚ Р°РєРєР°СѓРЅС‚Р°? <Link to="/register">Р—Р°СЂРµРіРёСЃС‚СЂРёСЂСѓР№С‚РµСЃСЊ</Link></p>
         </div>
     );
 };
 
 export default LoginPage;
+ 

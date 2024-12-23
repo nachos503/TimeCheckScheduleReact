@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+ï»¿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../services/api';
 
@@ -18,7 +18,7 @@ const RegisterPage = () => {
             alert(response.data);
             navigate('/');
         } catch (error) {
-            alert(error.response?.data || 'Îøèáêà ðåãèñòðàöèè');
+            alert(error.response?.data || 'ÐžÑˆÐ¸Ð±ÐºÐ° Ñ€ÐµÐ³Ð¸ÑÑ‚Ñ€Ð°Ñ†Ð¸Ð¸');
         }
     };
 
@@ -30,7 +30,7 @@ const RegisterPage = () => {
                 placeholder="Login"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-            />
+            /> 
             <input
                 type="password"
                 placeholder="Password"

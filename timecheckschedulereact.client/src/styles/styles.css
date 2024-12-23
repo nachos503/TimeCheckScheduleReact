@@ -1,0 +1,470 @@
+﻿body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Inter, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f8f8;
+}
+
+h3 {
+    padding: 0px;
+    margin: 5px;
+    color: #99f;
+}
+
+label {
+    font-family: Inter, sans-serif;
+    font-size: 16px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    padding: 20px;
+    box-sizing: border-box;
+    background: #fff;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+    height: 70px;
+    border-radius: 4px;
+    border: none;
+    background: #FFF;
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+input, select {
+    border-radius: 4px;
+    min-height: 32px;
+    border: none;
+    background: #FFF;
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+select {
+    min-width: 100px;
+    background-color: fff;
+    ;
+}
+
+textarea {
+    border-radius: 4px;
+    border: none;
+    background: #FFF;
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.left-side {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: 900;
+    color: #99f;
+}
+
+.left-menu {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    align-self: stretch;
+}
+
+    .left-menu a {
+        color: #99f;
+        text-decoration: none;
+        font-weight: 400;
+        cursor: pointer;
+    }
+
+button {
+    padding: 5px 10px;
+    background-color: #99f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.right-side {
+    display: flex;
+    height: 30px;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+
+.search {
+    display: flex;
+    width: 138px;
+    padding: 4px 10px;
+    align-items: center;
+    gap: 5px;
+    align-self: stretch;
+    border: none;
+    background: #FFF;
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+    font-size: 16px;
+}
+
+.cal-body {
+    width: 90%;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 10px;
+}
+
+.cal-header {
+    display: flex;
+    height: 70px;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 5px 20px;
+    border-radius: 4px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+}
+
+.left-cal-header {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+}
+
+.cal-name {
+    display: flex;
+    padding: 2px 0px;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+}
+
+.profile-pic {
+    height: 50px;
+    width: auto;
+    border-radius: 1000px;
+}
+
+.cal-name-text {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 6px;
+    align-self: stretch;
+}
+
+.profile-name {
+    font-weight: normal;
+    font-weight: bold;
+}
+
+.location {
+    font-size: 12px;
+    color: #777;
+}
+
+.cal-total-hours {
+    font-weight: normal;
+}
+
+    .cal-total-hours span {
+        font-weight: bold;
+        font-size: 20px;
+    }
+
+.week-chooser {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+    .week-chooser button {
+        height: 32px;
+        padding: 0 10px;
+        background-color: #99f;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+.curr-week {
+    padding: 5px 10px;
+    box-sizing: border-box;
+    height: 32px;
+    background-color: #99f;
+    color: white;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.create-button {
+    padding: 5px 15px;
+    background-color: #99f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.cal-main {
+    display: flex;
+    flex-direction: row;
+    border-radius: 4px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+}
+
+.cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    flex-grow: 1;
+}
+
+.time-column {
+    display: flex;
+    border-radius: 4px;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    max-width: 100px;
+    border-right: 1px solid #e5e5e5;
+}
+
+.time-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f5f5f5;
+    width: 100%;
+    height: 90px;
+    font-weight: bold;
+}
+
+.time-slot {
+    width: 100%;
+    height: 35px; /* 15 минут */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #e5e5e5;
+    cursor: pointer;
+    background-color: #fff;
+}
+
+    .time-slot.selected {
+        background-color: #d1e7fd;
+        border: 2px solid #99f;
+    }
+
+    .time-slot:hover {
+        background-color: #f0f8ff;
+    }
+
+.day-column {
+    border-right: 1px solid #e5e5e5;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.date-header {
+    height: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+    width: 100%;
+    padding: 0 5px;
+    box-sizing: border-box;
+}
+
+.progress {
+    width: 80%;
+    height: 20px;
+    border-radius: 5px;
+    background-color: #e0e0e0;
+    margin-top: 5px;
+    position: relative;
+}
+
+.progress-bar {
+    width: 75%;
+    height: 100%;
+    background-color: #99f;
+    border-radius: 5px;
+}
+
+.login-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    padding-block: 50px;
+    padding-inline: 150px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    border-radius: 8px;
+    background: #FFF;
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+
+.login-body {
+    background-color: #FFF;
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    padding: 25px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    border-radius: 8px;
+    background: #FFF;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+    z-index: 1000;
+}
+
+    .modal h3 {
+        margin-bottom: 10px;
+    }
+
+.row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.task-field {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-self: stretch;
+    align-items: center;
+}
+
+#task-name {
+    min-width: 295px;
+}
+
+#task-start-time, #task-end-time {
+    align-self: stretch;
+    text-align: center;
+}
+
+.start-time, .end-time {
+    padding-inline: 10px;
+}
+
+.date-time, .task-description {
+    align-self: center;
+    padding-inline: 10px;
+    align-items: center;
+}
+
+#task-date {
+    max-width: 120px;
+    text-align: center;
+}
+
+#task-desc {
+    min-width: 380px;
+    min-height: 64px;
+}
+
+button.cancel {
+    background: #6B7DB3;
+}
+
+button.delete {
+    background: #B36B6B;
+}
+
+.row-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+}
+
+table, th, td, tr {
+    border: 1px solid #99f;
+    border-collapse: collapse;
+    border-radius: 6px;
+}
+
+td, th {
+    padding: 10px;
+}
+
+.event-block {
+    background-color: #99f;
+    border-radius: 4px;
+    box-sizing: border-box;
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+    padding: 5px;
+    margin: 2px 0;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+    .event-block:hover {
+        background-color: #6699ff;
+    }
+
+.selection {
+    position: absolute;
+    background-color: rgba(153, 153, 255, 0.3);
+    border: 1px dashed #99f;
+    pointer-events: none;
+}
+
+.cal-main {
+    position: relative;
+}
+
+/*Это пример задания положения блока задач по уникальному ID'у - такие блоки будут создаваться и удаляться */
+
+
+.event-head {
+    display: flex;
+    flex-direction: column;
+}
+
+.event-time, .event-name {
+    font-weight: bold;
+    color: white;
+}
+
+.event-desc {
+    color: white;
+}
+
+.event-space {
+    width: 90%;
+    align-self: first baseline;
+    flex-grow: 1;
+}

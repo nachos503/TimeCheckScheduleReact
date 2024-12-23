@@ -1,4 +1,4 @@
-// src/components/DeleteConfirmationModal.jsx
+﻿// src/components/DeleteConfirmationModal.jsx
 import React from 'react';
 
 const DeleteConfirmationModal = ({ task, onClose, onConfirm }) => {
@@ -28,7 +28,7 @@ const modalStyles = {
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 1000
-    },
+    }, 
     modal: {
         backgroundColor: '#fff',
         padding: '20px',

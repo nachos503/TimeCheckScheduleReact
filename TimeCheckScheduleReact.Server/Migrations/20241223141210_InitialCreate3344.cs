@@ -5,14 +5,14 @@
 namespace TimeCheckScheduleReact.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class AddUsersTable : Migration
+    public partial class InitialCreate3344 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Email",
-                table: "Users",
+                name: "ProjectName",
+                table: "TaskItems",
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "");
@@ -22,8 +22,8 @@ namespace TimeCheckScheduleReact.Server.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Email",
-                table: "Users");
+                name: "ProjectName",
+                table: "TaskItems");
         }
     }
 }

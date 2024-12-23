@@ -12,8 +12,8 @@ using TimeCheckScheduleReact.Data;
 namespace TimeCheckScheduleReact.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241223115323_CheckPendingChanges")]
-    partial class CheckPendingChanges
+    [Migration("20241223133138_InitialCreate334")]
+    partial class InitialCreate334
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,28 @@ namespace TimeCheckScheduleReact.Server.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("TimeCheckScheduleReact.Models.Project", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Projects");
+                });
 
             modelBuilder.Entity("TimeCheckScheduleReact.Models.TaskItem", b =>
                 {
@@ -43,6 +65,9 @@ namespace TimeCheckScheduleReact.Server.Migrations
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
@@ -50,14 +75,35 @@ namespace TimeCheckScheduleReact.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("TaskItems");
+                });
+
+            modelBuilder.Entity("TimeCheckScheduleReact.Models.TimeEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TaskItemId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("TaskItemId");
 
-                    b.ToTable("TaskItems");
+                    b.ToTable("TimeEntries");
                 });
 
             modelBuilder.Entity("TimeCheckScheduleReact.Models.User", b =>
@@ -88,10 +134,10 @@ namespace TimeCheckScheduleReact.Server.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("TimeCheckScheduleReact.Models.TaskItem", b =>
+            modelBuilder.Entity("TimeCheckScheduleReact.Models.Project", b =>
                 {
                     b.HasOne("TimeCheckScheduleReact.Models.User", "User")
-                        .WithMany("TaskItems")
+                        .WithMany("Projects")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -99,9 +145,41 @@ namespace TimeCheckScheduleReact.Server.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TimeCheckScheduleReact.Models.User", b =>
+            modelBuilder.Entity("TimeCheckScheduleReact.Models.TaskItem", b =>
+                {
+                    b.HasOne("TimeCheckScheduleReact.Models.Project", "Project")
+                        .WithMany("TaskItems")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("TimeCheckScheduleReact.Models.TimeEntry", b =>
+                {
+                    b.HasOne("TimeCheckScheduleReact.Models.TaskItem", "TaskItem")
+                        .WithMany("TimeEntries")
+                        .HasForeignKey("TaskItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TaskItem");
+                });
+
+            modelBuilder.Entity("TimeCheckScheduleReact.Models.Project", b =>
                 {
                     b.Navigation("TaskItems");
+                });
+
+            modelBuilder.Entity("TimeCheckScheduleReact.Models.TaskItem", b =>
+                {
+                    b.Navigation("TimeEntries");
+                });
+
+            modelBuilder.Entity("TimeCheckScheduleReact.Models.User", b =>
+                {
+                    b.Navigation("Projects");
                 });
 #pragma warning restore 612, 618
         }

@@ -9,16 +9,16 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ─юсртыхэшх ёхЁтшёют т ъюэЄхщэхЁ
+// Добавление сервисов в контейнер
 
-// ═рёЄЁющър срч√ фрээ√ї
+// Настройка базы данных
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// ─юсртыхэшх JwtTokenService
+// Добавление JwtTokenService
 builder.Services.AddSingleton<JwtTokenService>();
 
-// ═рёЄЁющър JWT рєЄхэЄшЇшърЎшш
+// Настройка JWT аутентификации
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -40,7 +40,7 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = issuer,
         ValidAudience = audience,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
-        ClockSkew = TimeSpan.Zero // ╙сшЁрхь ёЄрэфрЁЄэє■ чрфхЁцъє 5 ьшэєЄ
+        ClockSkew = TimeSpan.Zero // Убираем стандартную задержку 5 минут
     };
 
     options.Events = new JwtBearerEvents
@@ -58,26 +58,26 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// ═рёЄЁющър CORS
+// Настройка CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("https://localhost:5173") // ╙схфшЄхё№, ўЄю яЁюЄюъюы ш яюЁЄ яЁртшы№э√х
+        policy.WithOrigins("https://localhost:5173") // Убедитесь, что протокол и порт правильные
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
     });
 });
 
-// ─юсртыхэшх ъюэЄЁюыыхЁют
+// Добавление контроллеров
 builder.Services.AddControllers();
 
-// ═рёЄЁющър Swagger ё яюффхЁцъющ JWT
+// Настройка Swagger с поддержкой JWT
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    // ─юсртыхэшх яюффхЁцъш JWT т Swagger
+    // Добавление поддержки JWT в Swagger
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = @"JWT Authorization header using the Bearer scheme.  
@@ -111,7 +111,7 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-// ═рёЄЁющър ъюэтхщхЁр юсЁрсюЄъш чряЁюёют
+// Настройка конвейера обработки запросов
 
 if (app.Environment.IsDevelopment())
 {

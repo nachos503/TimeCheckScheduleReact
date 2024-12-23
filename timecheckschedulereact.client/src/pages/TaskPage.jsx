@@ -1,4 +1,4 @@
-// src/pages/TasksPage.jsx
+п»ї// src/pages/TasksPage.jsx
 import React, { useEffect, useState } from 'react';
 import API from '../services/api';
 import EditTaskModal from '../components/EditTaskModal';
@@ -33,7 +33,7 @@ const TasksPage = () => {
     const handleDeleteClick = (task) => {
         setSelectedTask(task);
         setIsDeleteModalOpen(true);
-    };
+    }; 
 
     const handleDeleteConfirm = async () => {
         try {
@@ -50,7 +50,7 @@ const TasksPage = () => {
 
     const handleEditSave = async (updatedTask) => {
         if (selectedTask) {
-            // Режим редактирования
+            // Р РµР¶РёРј СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ
             try {
                 const response = await API.put(`/tasks/${updatedTask.id}`, updatedTask);
                 setTasks(tasks.map(task => (task.id === updatedTask.id ? response.data : task)));
@@ -62,7 +62,7 @@ const TasksPage = () => {
                 alert(error.response?.data?.message || 'Failed to update task.');
             }
         } else {
-            // Режим создания
+            // Р РµР¶РёРј СЃРѕР·РґР°РЅРёСЏ
             try {
                 const response = await API.post('/tasks', updatedTask);
                 setTasks([...tasks, response.data]);
@@ -93,7 +93,7 @@ const TasksPage = () => {
                 ))}
             </ul>
 
-            {/* Модальное окно для редактирования/создания задачи */}
+            {/* РњРѕРґР°Р»СЊРЅРѕРµ РѕРєРЅРѕ РґР»СЏ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ/СЃРѕР·РґР°РЅРёСЏ Р·Р°РґР°С‡Рё */}
             {isEditModalOpen && (
                 <EditTaskModal
                     task={selectedTask}
@@ -102,7 +102,7 @@ const TasksPage = () => {
                 />
             )}
 
-            {/* Модальное окно подтверждения удаления */}
+            {/* РњРѕРґР°Р»СЊРЅРѕРµ РѕРєРЅРѕ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ СѓРґР°Р»РµРЅРёСЏ */}
             {isDeleteModalOpen && (
                 <DeleteConfirmationModal
                     task={selectedTask}
