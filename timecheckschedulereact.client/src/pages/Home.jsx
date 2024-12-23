@@ -1,5 +1,4 @@
-﻿// src/pages/Home.jsx
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import Calendar from '../components/Calendar/Calendar';
 import ProjectModal from '../components/Modals/ProjectModal';
 import TaskModal from '../components/Modals/TaskModal';
@@ -7,6 +6,7 @@ import TimerModal from '../components/Modals/TimerModal';
 import AnalyticsModal from '../components/Modals/AnalyticsModal';
 import API from '../services/api';
 import { useNavigate } from 'react-router-dom';
+import profilePic from '../assets/profile-pic.jpg';
 
 const Home = () => {
     const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
@@ -16,11 +16,17 @@ const Home = () => {
     const [currentWeek, setCurrentWeek] = useState(getCurrentWeek());
     const [projects, setProjects] = useState([]);
     const [selectedProject, setSelectedProject] = useState(null);
+    const [tasks, setTasks] = useState([]);
+    const [weeklyHours, setWeeklyHours] = useState(0);
     const navigate = useNavigate();
 
     useEffect(() => {
         fetchProjects();
     }, []);
+
+    useEffect(() => {
+        fetchTasksForWeek();
+    }, [currentWeek]);
 
     const fetchProjects = async () => {
         try {
@@ -32,6 +38,33 @@ const Home = () => {
         } catch (error) {
             console.error('Ошибка при получении проектов:', error);
             alert('Не удалось загрузить проекты.');
+        }
+    };
+
+    const fetchTasksForWeek = async () => {
+        try {
+            const response = await API.get('/tasks', {
+                params: {
+                    startDate: currentWeek[0].toISOString(),
+                    endDate: currentWeek[6].toISOString(),
+                },
+            });
+            const tasksForWeek = response.data.map((task) => ({
+                ...task,
+                startTime: new Date(task.startTime),
+                endTime: new Date(task.endTime),
+            }));
+            setTasks(tasksForWeek);
+
+            // Рассчитываем часы для текущей недели
+            const calculatedHours = tasksForWeek.reduce((total, task) => {
+                const duration = (task.endTime - task.startTime) / (1000 * 60 * 60); // В часах
+                return total + duration;
+            }, 0);
+            setWeeklyHours(calculatedHours.toFixed(2));
+        } catch (error) {
+            console.error('Ошибка при получении задач:', error);
+            alert('Не удалось загрузить задачи.');
         }
     };
 
@@ -56,26 +89,15 @@ const Home = () => {
             await API.post('/tasks', task);
             alert('Задача успешно создана');
             setIsTaskModalOpen(false);
-            fetchTasks();
+            fetchTasksForWeek();
         } catch (error) {
             console.error('Ошибка при сохранении задачи:', error);
-            alert('Не удалось сохранить задачу');
+            alert('Не удалось сохранить задачу.');
         }
     };
 
     const handleStartTimer = (time) => {
         alert(`Таймер запущен на ${time}`);
-    };
-
-    const fetchTasks = async () => {
-        try {
-            const response = await API.get('/tasks');
-            // Обновите состояние задач или иным образом обработайте полученные данные
-            // Например, передайте их в Calendar.jsx через пропсы или контекст
-        } catch (error) {
-            console.error('Ошибка при получении задач:', error);
-            alert('Не удалось загрузить задачи.');
-        }
     };
 
     return (
@@ -99,11 +121,11 @@ const Home = () => {
                 <div className="cal-header">
                     <div className="left-cal-header">
                         <div className="cal-name">
-                            <img className="profile-pic" src="/assets/profile-pic.jpg" alt="Profile" />
-                            <div className="profile-name">Белякова Анна Сергеевна</div>
+                            <img className="profile-pic" src={profilePic} alt="Profile" />
+                            <div className="profile-name">Сафронов Евгений Сергеевич</div>
                         </div>
                         <div className="cal-total-hours">
-                            Все часы: <span>20.25 / 40</span>
+                            Все часы: <span>{weeklyHours} / 40</span>
                         </div>
                     </div>
                     <div className="week-chooser">
@@ -111,7 +133,7 @@ const Home = () => {
                             &lt;
                         </button>
                         <div className="curr-week">
-                            Неделя - {currentWeek[0].getWeekNumber()} ({formatDate(currentWeek[0])} - {formatDate(currentWeek[6])})
+                            Неделя - {formatDate(currentWeek[0])} - {formatDate(currentWeek[6])}
                         </div>
                         <button className="next-week" onClick={() => setCurrentWeek(getNextWeek(currentWeek))}>
                             &gt;
@@ -127,6 +149,7 @@ const Home = () => {
                     projects={projects}
                     selectedProject={selectedProject}
                     setSelectedProject={setSelectedProject}
+                    tasks={tasks}
                 />
             </div>
 
@@ -181,7 +204,10 @@ function getNextWeek(currentWeek) {
 }
 
 function formatDate(date) {
-    return date.toLocaleDateString('ru-RU');
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear().toString().slice(-2);
+    return `${day}/${month}/${year}`;
 }
 
 export default Home;

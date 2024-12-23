@@ -11,16 +11,22 @@ const Calendar = ({ currentWeek, projects, selectedProject, setSelectedProject }
     const [taskModalData, setTaskModalData] = useState(null);
 
     useEffect(() => {
-        fetchTasks();
+        fetchTasksForWeek();
     }, [currentWeek]);
 
-    const fetchTasks = async () => {
+    const fetchTasksForWeek = async () => {
         try {
-            const response = await API.get('/tasks');
+            const response = await API.get('/tasks', {
+                params: {
+                    startDate: currentWeek[0].toISOString(),
+                    endDate: currentWeek[6].toISOString(),
+                },
+            });
             const fetchedTasks = response.data.map((task) => ({
                 ...task,
                 startTime: new Date(task.startTime),
                 endTime: new Date(task.endTime),
+                date: new Date(task.startTime).toISOString().split('T')[0],
             }));
             setTasks(fetchedTasks);
         } catch (error) {
@@ -86,7 +92,7 @@ const Calendar = ({ currentWeek, projects, selectedProject, setSelectedProject }
                 alert('Задача успешно создана');
             }
             setIsTaskModalOpen(false);
-            fetchTasks();
+            fetchTasksForWeek();
         } catch (error) {
             console.error('Ошибка при сохранении задачи:', error);
             alert('Не удалось сохранить задачу.');
@@ -99,7 +105,7 @@ const Calendar = ({ currentWeek, projects, selectedProject, setSelectedProject }
                 await API.delete(`/tasks/${taskModalData.id}`);
                 alert('Задача успешно удалена');
                 setIsTaskModalOpen(false);
-                fetchTasks();
+                fetchTasksForWeek();
             }
         } catch (error) {
             console.error('Ошибка при удалении задачи:', error);
@@ -137,29 +143,9 @@ const Calendar = ({ currentWeek, projects, selectedProject, setSelectedProject }
                                 month: 'short',
                             })}
                         </div>
-                        <div
-                            className="event-space"
-                            onMouseDown={(e) => {
-                                const rect = e.currentTarget.getBoundingClientRect();
-                                const y = e.clientY - rect.top;
-                                const idx = Math.floor(y / 35);
-                                const time = new Date(day);
-                                time.setHours(8 + Math.floor(idx / 4), (idx % 4) * 15, 0, 0);
-                                handleMouseDown(day, time.toISOString());
-                            }}
-                            onMouseOver={(e) => {
-                                if (selectedTimeRange) {
-                                    const rect = e.currentTarget.getBoundingClientRect();
-                                    const y = e.clientY - rect.top;
-                                    const idx = Math.floor(y / 35);
-                                    const time = new Date(selectedTimeRange.day);
-                                    time.setHours(8 + Math.floor(idx / 4), (idx % 4) * 15, 0, 0);
-                                    handleMouseOver(selectedTimeRange.day, time.toISOString());
-                                }
-                            }}
-                        >
+                        <div className="event-space" style={{ position: 'relative', height: '560px' }}>
                             {eventsByDay[day.toISOString().split('T')[0]]?.map((task) => (
-                                <EventBlock key={task.id} event={task} onClick={() => handleTaskClick(task)} />
+                                <EventBlock key={task.id} event={task} onClick={handleTaskClick} />
                             ))}
                             {selectedTimeRange && selectedTimeRange.day.toISOString() === day.toISOString() && (
                                 <div
@@ -175,6 +161,7 @@ const Calendar = ({ currentWeek, projects, selectedProject, setSelectedProject }
                                 ></div>
                             )}
                         </div>
+
                     </div>
                 ))}
             </div>
@@ -204,16 +191,6 @@ function calculateHeight(startTime, endTime) {
     const totalMinutes = (endDate - startDate) / 60000;
     return (totalMinutes / 15) * 35;
 }
-
-Date.prototype.getWeekNumber = function () {
-    const date = new Date(this.getTime());
-    date.setHours(0, 0, 0, 0);
-    date.setDate(date.getDate() + 4 - (date.getDay() || 7));
-    const yearStart = new Date(date.getFullYear(), 0, 1);
-    return Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
-};
-
-
 
 function formatTime(date) {
     const hours = date.getHours().toString().padStart(2, '0');
