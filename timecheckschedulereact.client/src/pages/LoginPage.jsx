@@ -1,49 +1,59 @@
-﻿// src/pages/LoginPage.jsx
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+﻿import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import API from '../services/api';
 
 const LoginPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate();
 
     const handleLogin = async () => {
         try {
-            // Отправка запроса без Authorization заголовка
             const response = await API.post('/auth/login', {
                 username,
-                password
+                password,
             });
-            console.log('Login response:', response.data);
             localStorage.setItem('token', response.data.token);
-            navigate('/tasks');
+            window.location.href = '/home'; // Редирект после успешного входа
         } catch (error) {
-            console.error('Error:', error.response?.data || error.message);
-            alert(error.response?.data?.message || 'Login failed.');
+            alert(error.response?.data?.message || 'Ошибка входа.');
         }
     };
 
     return (
-        <div>
-            <h1>Login</h1>
-            <input
-                type="text"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-            />
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <button onClick={handleLogin}>Login</button>
-            <p>Нет аккаунта? <Link to="/register">Зарегистрируйтесь</Link></p>
-        </div>
+        <>
+            <head>
+                <meta charSet="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>Вход в Календарь TIMECHECK</title>
+                <link href="./styles.css" rel="stylesheet" />
+            </head>
+
+            <body className="login-body">
+                <div className="login-dialog">
+                    <div className="logo">TIMECHECK</div>
+                    <label htmlFor="login">Введите логин</label>
+                    <input
+                        type="text"
+                        name="login"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
+                    <label htmlFor="pass">Введите пароль</label>
+                    <input
+                        type="password"
+                        name="pass"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <button onClick={handleLogin}>Войти</button>
+                    <p>
+                        Нет аккаунта?{' '}
+                        <Link to="/register" className="register-link">Зарегистрироваться</Link>
+                    </p>
+                </div>
+            </body>
+        </>
     );
 };
 
 export default LoginPage;
- 

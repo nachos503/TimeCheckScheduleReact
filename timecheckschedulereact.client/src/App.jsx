@@ -10,21 +10,21 @@ import ErrorBoundary from './components/UI/ErrorBoundary';
 import TimerModal from './components/Modals/TimerModal';
 import Timer from './components/UI/Timer';
 
-const App = () => {
-    const isAuthenticated = !!localStorage.getItem('token');
+const ProtectedRoute = ({ children }) => {
+    const isAuthenticated = !!localStorage.getItem('token'); // Проверка авторизации
+    return isAuthenticated ? children : <Navigate to="/login" replace />;
+};
 
-    // Состояние для работы с таймером
+const App = () => {
     const [isTimerModalOpen, setIsTimerModalOpen] = useState(false); // Открыто ли модальное окно таймера
     const [timerTime, setTimerTime] = useState(null); // Время таймера в формате "HH:MM"
     const [isTimerRunning, setIsTimerRunning] = useState(false); // Запущен ли таймер
 
-    // Обработчик начала таймера
     const handleStartTimer = (time) => {
         setTimerTime(time); // Устанавливаем время, выбранное в TimerModal
         setIsTimerRunning(true); // Запускаем таймер
     };
 
-    // Обработчик остановки таймера
     const handleStopTimer = (remainingSeconds) => {
         console.log(`Оставшееся время: ${remainingSeconds} секунд`);
         setIsTimerRunning(false); // Останавливаем таймер
@@ -34,31 +34,40 @@ const App = () => {
         <ErrorBoundary>
             <Router>
                 <Routes>
-                    <Route path="/login" element={isAuthenticated ? <Navigate to="/home" replace /> : <Login />} />
-                    <Route path="/register" element={isAuthenticated ? <Navigate to="/home" replace /> : <Register />} />
+                    {/* Публичные маршруты */}
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+
+                    {/* Защищённые маршруты */}
                     <Route
                         path="/home"
                         element={
-                            isAuthenticated ? (
-                                <Home onOpenTimer={() => setIsTimerModalOpen(true)} /> // Передаём пропс для открытия таймера
-                            ) : (
-                                <Navigate to="/login" replace />
-                            )
+                            <ProtectedRoute>
+                                <Home onOpenTimer={() => setIsTimerModalOpen(true)} />
+                            </ProtectedRoute>
                         }
                     />
                     <Route
                         path="/calendar"
-                        element={isAuthenticated ? <CalendarPage /> : <Navigate to="/login" replace />}
+                        element={
+                            <ProtectedRoute>
+                                <CalendarPage />
+                            </ProtectedRoute>
+                        }
                     />
                     <Route
                         path="/analytics"
-                        element={isAuthenticated ? <AnalyticsPage /> : <Navigate to="/login" replace />}
+                        element={
+                            <ProtectedRoute>
+                                <AnalyticsPage />
+                            </ProtectedRoute>
+                        }
                     />
-                    <Route path="*" element={<Navigate to={isAuthenticated ? "/home" : "/login"} replace />} />
+                    <Route path="*" element={<Navigate to="/login" replace />} />
                 </Routes>
             </Router>
 
-            {/* Таймер, который отображается при запуске */}
+            {/* Таймер */}
             {isTimerRunning && timerTime && (
                 <div style={{ position: 'fixed', bottom: '10px', right: '10px', zIndex: 1000 }}>
                     <Timer
@@ -68,7 +77,7 @@ const App = () => {
                 </div>
             )}
 
-            {/* Модальное окно для установки времени таймера */}
+            {/* Модальное окно таймера */}
             <TimerModal
                 isOpen={isTimerModalOpen}
                 onClose={() => setIsTimerModalOpen(false)}

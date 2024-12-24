@@ -18,37 +18,48 @@ const Home = () => {
     const [selectedProject, setSelectedProject] = useState(null);
     const [tasks, setTasks] = useState([]);
     const [weeklyHours, setWeeklyHours] = useState(0);
+    const [isLoggedOut, setIsLoggedOut] = useState(false); // Контролируем выход
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchProjects();
-    }, []);
+        if (!isLoggedOut) fetchProjects();
+    }, [isLoggedOut]);
 
     useEffect(() => {
-        fetchTasksForWeek();
-    }, [currentWeek]);
+        if (!isLoggedOut) fetchTasksForWeek();
+    }, [currentWeek, isLoggedOut]);
 
     const fetchProjects = async () => {
         try {
-            const response = await API.get('/projects');
+            const token = localStorage.getItem('token');
+            if (!token) return; // Проверяем токен перед запросом
+
+            const response = await API.get('/projects', {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
             setProjects(response.data);
             if (response.data.length > 0) {
                 setSelectedProject(response.data[0].id);
             }
         } catch (error) {
-            console.error('Ошибка при получении проектов:', error);
-            alert('Не удалось загрузить проекты.');
+            handleAuthError(error);
         }
     };
 
     const fetchTasksForWeek = async () => {
         try {
+            const token = localStorage.getItem('token');
+            if (!token) return; // Проверяем токен перед запросом
+
             const response = await API.get('/tasks', {
+                headers: { Authorization: `Bearer ${token}` },
                 params: {
                     startDate: currentWeek[0].toISOString(),
                     endDate: currentWeek[6].toISOString(),
                 },
             });
+
             const tasksForWeek = response.data.map((task) => ({
                 ...task,
                 startTime: new Date(task.startTime),
@@ -56,21 +67,29 @@ const Home = () => {
             }));
             setTasks(tasksForWeek);
 
-            // Рассчитываем часы для текущей недели
             const calculatedHours = tasksForWeek.reduce((total, task) => {
                 const duration = (task.endTime - task.startTime) / (1000 * 60 * 60); // В часах
                 return total + duration;
             }, 0);
             setWeeklyHours(calculatedHours.toFixed(2));
         } catch (error) {
-            console.error('Ошибка при получении задач:', error);
-            alert('Не удалось загрузить задачи.');
+            handleAuthError(error);
         }
     };
 
     const handleLogout = () => {
         localStorage.removeItem('token');
-        navigate('/login');
+        setIsLoggedOut(true); // Устанавливаем флаг выхода
+        navigate('/login', { replace: true }); // Немедленный редирект
+    };
+
+    const handleAuthError = (error) => {
+        if (error.response?.status === 401 || error.response?.status === 403) {
+            // Обрабатываем ошибки авторизации
+            handleLogout();
+        } else {
+            console.error('Ошибка при выполнении запроса:', error);
+        }
     };
 
     const handleAddProject = (newProject) => {
@@ -86,13 +105,17 @@ const Home = () => {
 
     const handleSaveTask = async (task) => {
         try {
-            await API.post('/tasks', task);
+            const token = localStorage.getItem('token');
+            if (!token) return; // Проверяем токен перед запросом
+
+            await API.post('/tasks', task, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
             alert('Задача успешно создана');
             setIsTaskModalOpen(false);
             fetchTasksForWeek();
         } catch (error) {
-            console.error('Ошибка при сохранении задачи:', error);
-            alert('Не удалось сохранить задачу.');
+            handleAuthError(error);
         }
     };
 
@@ -153,7 +176,6 @@ const Home = () => {
                 />
             </div>
 
-            {/* Модальные окна */}
             <ProjectModal
                 isOpen={isProjectModalOpen}
                 onClose={() => setIsProjectModalOpen(false)}

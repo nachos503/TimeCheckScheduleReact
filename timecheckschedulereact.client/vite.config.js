@@ -6,17 +6,24 @@ import path from 'path';
 import child_process from 'child_process';
 
 const baseFolder =
-    process.env.APPDATA !== undefined && process.env.APPDATA !== ''
+    typeof process !== 'undefined' && process.env.APPDATA
         ? `${process.env.APPDATA}/ASP.NET/https`
-        : `${process.env.HOME}/.aspnet/https`;
+        : `${process.env.HOME || ''}/.aspnet/https`;
 
 const certificateName = "timecheckschedulereact.client";
 
 const certFilePath = path.join(baseFolder, `${certificateName}.pem`);
 const keyFilePath = path.join(baseFolder, `${certificateName}.key`);
 
+// Проверяем наличие каталога
+if (!fs.existsSync(baseFolder)) {
+    fs.mkdirSync(baseFolder, { recursive: true });
+}
+
 // Проверяем и создаем сертификаты, если они отсутствуют
 if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
+    console.log("Сертификаты отсутствуют. Пытаемся создать...");
+
     const result = child_process.spawnSync('dotnet', [
         'dev-certs',
         'https',
@@ -27,8 +34,13 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
         '--no-password',
     ], { stdio: 'inherit' });
 
+    if (result.error) {
+        console.error("Ошибка выполнения команды dotnet dev-certs:", result.error);
+        throw new Error("Не удалось создать сертификат. Проверьте установку .NET SDK.");
+    }
+
     if (result.status !== 0) {
-        throw new Error("Could not create certificate.");
+        throw new Error("Не удалось создать сертификат. Проверьте доступ к каталогу.");
     }
 }
 
